@@ -1,6 +1,6 @@
 name: Validate AfCFTA Rule Execution
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   evaluate-rule:
@@ -14,27 +14,38 @@ jobs:
           node -e '
             const rule = require("./rules/rule_afcfta_fertilizers.json");
             const tx = require("./tests/test_shipment_kenya.json");
-
-            console.log("=== بدء تقييم المعاملة ===");
-            console.log("رقم الشحنة:", tx.transaction_id);
-            console.log("البند الجمركي:", tx.consignment.hs_code);
-
-            // حساب القيمة المضافة
+            
+            console.log("==========================================");
+            console.log("=== AUTOMATED LOGISTICS TRANSACTION EVALUATION ===");
+            console.log("==========================================");
+            console.log("Transaction ID:", tx.transaction_id);
+            console.log("Product Description:", tx.consignment.product_description);
+            console.log("HS Subheading:", tx.consignment.hs_code);
+            console.log("Port of Loading:", tx.logistics.origin_port);
+            console.log("Port of Discharge:", tx.logistics.destination_port);
+            
+            // Value Added Content calculation
             const price = tx.consignment.ex_works_price;
             const vnm = tx.consignment.non_originating_materials_value;
             const vam = ((price - vnm) / price) * 100;
-            console.log("نسبة القيمة المضافة المحسوبة:", vam.toFixed(2) + "%");
-
-            // التحقق من الشروط
+            console.log("\n--- Rules of Origin Assessment ---");
+            console.log("Calculated Value Added Content (VAM):", vam.toFixed(2) + "%");
+            console.log("Minimum Threshold Required: 35%");
+            
             const isDirect = tx.logistics.direct_consignment === true;
+            console.log("Direct Consignment Verified:", isDirect);
+            
             const isValidOrigin = vam >= 35.0;
-
+            
+            console.log("\n--- Conformance Decision ---");
             if (isValidOrigin && isDirect) {
-              console.log(" النتيجة: مطابقة تامة لقواعد AfCFTA");
-              console.log(" الإجراء التنظيمي:", rule.outcomes.regulatory_action);
-              console.log(" الرسوم المطبقة:", rule.outcomes.customs_duty_rate + "%");
+              console.log(" Conformance Status: FULLY COMPLIANT (AfCFTA Annex 2)");
+              console.log(" Regulatory Action:", rule.outcomes.regulatory_action);
+              console.log(" Preferential Customs Duty Rate:", rule.outcomes.customs_duty_rate + "%");
+              console.log(" Required Documentation:", rule.outcomes.certification_required);
+              console.log("==========================================");
             } else {
-              console.error("❌ فشل المطابقة: الشروط غير مستوفاة");
+              console.error("❌ Conformance Failed: Conditions not met");
               process.exit(1);
             }
           '
