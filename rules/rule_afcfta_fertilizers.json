@@ -1,0 +1,62 @@
+{
+  "rule_metadata": {
+    "identifier": "urn:dwd:rule:afcfta:trade:fertilizers:hs31:v1.0",
+    "title": "Exemption Tarifaire Préférentielle ZLECAf - Engrais et Phosphates",
+    "version": "1.0.0",
+    "author": "Younes Bennane",
+    "organization": "GeoTradeCorridors / SMSI",
+    "legal_source": "Accord ZLECAf, Annexe 2 sur les Règles d'Origine, Appendice IV"
+  },
+  "dimensions": {
+    "jurisdiction": "AfCFTA",
+    "domain": "cross_border_logistics",
+    "commodity_group": "HS_CHAPTER_31"
+  },
+  "conditions": {
+    "all": [
+      {
+        "variable": "customs.hs_code",
+        "operator": "in_range",
+        "parameters": {
+          "min": 310200,
+          "max": 310590
+        }
+      },
+      {
+        "variable": "logistics.export_country_iso2",
+        "operator": "in_set",
+        "parameters": {
+          "set": ["MA", "EG", "NG", "DZ", "TN", "CI", "KE"]
+        }
+      },
+      {
+        "variable": "logistics.import_country_iso2",
+        "operator": "in_set",
+        "parameters": {
+          "set": ["NG", "KE", "ET", "GH", "SN", "CI"]
+        }
+      },
+      {
+        "variable": "origin.value_added_percent",
+        "operator": "greater_than_or_equal",
+        "parameters": {
+          "threshold": 35.0
+        }
+      },
+      {
+        "variable": "logistics.direct_consignment",
+        "operator": "equals",
+        "parameters": {
+          "value": true
+        }
+      }
+    ]
+  },
+  "outcomes": {
+    "tariff_treatment": "PREFERENTIAL_ZERO_DUTY",
+    "customs_duty_rate": 0.0,
+    "conformance_code": "AFCFTA_COMPLIANT",
+    "regulatory_action": "APPLY_EXEMPTION",
+    "certification_required": "ELECTRONIC_CERTIFICATE_OF_ORIGIN"
+  }
+}
