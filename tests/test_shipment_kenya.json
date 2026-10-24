@@ -1,0 +1,23 @@
+{
+  "transaction_id": "TX-2026-MA-KE-001",
+  "consignment": {
+    "hs_code": 310520,
+    "product_description": "Mineral or chemical fertilizers containing nitrogen, phosphorus and potassium",
+    "gross_weight_kg": 25000000,
+    "invoice_currency": "USD",
+    "ex_works_price": 15000000.00,
+    "non_originating_materials_value": 4500000.00
+  },
+  "logistics": {
+    "origin_port": "Jorf Lasfar (MAJFL)",
+    "destination_port": "Mombasa (KEMBA)",
+    "export_country_iso2": "MA",
+    "import_country_iso2": "KE",
+    "direct_consignment": true,
+    "bill_of_lading_number": "BL-GTC-2026-889"
+  },
+  "origin_metrics": {
+    "calculated_vam_percent": 70.0,
+    "e_certificate_of_origin": "E-COO-AF-2026-9941"
+  }
+}
