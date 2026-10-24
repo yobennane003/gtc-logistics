@@ -1,0 +1,5 @@
+rule_id,hs_code_prefix,export_country,import_country,min_vam_pct,direct_transport,duty_rate,status
+R-AFCFTA-31-01,3105,MA,NG,35.0,true,0.00,AFCFTA_COMPLIANT
+R-AFCFTA-31-02,3105,MA,KE,35.0,true,0.00,AFCFTA_COMPLIANT
+R-AFCFTA-31-03,3105,MA,SN,35.0,true,0.00,AFCFTA_COMPLIANT
+R-AFCFTA-DEFAULT,3105,*,*,0.0,false,MFN_STANDARD,NON_COMPLIANT
