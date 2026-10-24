@@ -15,35 +15,40 @@ jobs:
             const rule = require("./rules/rule_afcfta_fertilizers.json");
             const tx = require("./tests/test_shipment_kenya.json");
             
-            console.log("==========================================");
-            console.log("=== بدء تقييم المعاملة اللوجستية آلياً ===");
-            console.log("==========================================");
-            console.log("رقم الشحنة:", tx.transaction_id);
-            console.log("وصف السلعة:", tx.consignment.product_description);
-            console.log("البند الجمركي (HS Code):", tx.consignment.hs_code);
-            console.log("ميناء الانطلاق:", tx.logistics.origin_port);
-            console.log("ميناء الوصول:", tx.logistics.destination_port);
+            console.log("==================================================");
+            console.log("=== AUTOMATED LOGISTICS TRANSACTION EVALUATION ===");
+            console.log("==================================================");
+            console.log("Transaction ID:", tx.transaction_id);
+            console.log("Product Description:", tx.consignment.product_description);
+            console.log("HS Subheading:", tx.consignment.hs_code);
+            console.log("Port of Loading:", tx.logistics.origin_port);
+            console.log("Port of Discharge:", tx.logistics.destination_port);
             
-            // حساب القيمة المضافة الإفريقية (VAM)
+            // Value Added Content (VAM) Calculation
             const price = tx.consignment.ex_works_price;
             const vnm = tx.consignment.non_originating_materials_value;
             const vam = ((price - vnm) / price) * 100;
-            console.log("\n--- معايير التحقق من المنشأ ---");
-            console.log("نسبة القيمة المضافة المحسوبة:", vam.toFixed(2) + "%");
-            console.log("الحد الأدنى المطلوب:", rule.conditions.all.find(c => c.variable === "origin.value_added_percent").parameters.threshold + "%");
+            
+            console.log("\n--- Rules of Origin Assessment ---");
+            console.log("Calculated Value Added Content (VAM):", vam.toFixed(2) + "%");
+            
+            const threshold = rule.conditions.all.find(c => c.variable === "origin.value_added_percent").parameters.threshold;
+            console.log("Minimum Threshold Required:", threshold + "%");
             
             const isDirect = tx.logistics.direct_consignment === true;
-            const isValidOrigin = vam >= 35.0;
+            console.log("Direct Consignment Verified:", isDirect);
             
-            console.log("\n--- نتيجة المطابقة القانونية ---");
+            const isValidOrigin = vam >= threshold;
+            
+            console.log("\n--- Conformance Decision ---");
             if (isValidOrigin && isDirect) {
-              console.log(" الحالة: مطابقة تامة لقواعد منشأ AfCFTA");
-              console.log(" الإجراء التنظيمي:", rule.outcomes.regulatory_action);
-              console.log(" التعريفة الجمركية التفضيلية:", rule.outcomes.customs_duty_rate + "%");
-              console.log(" الشهادة المطلوبة:", rule.outcomes.certification_required);
-              console.log("==========================================");
+              console.log(" Conformance Status: FULLY COMPLIANT (AfCFTA Annex 2)");
+              console.log(" Regulatory Action:", rule.outcomes.regulatory_action);
+              console.log(" Preferential Customs Duty Rate:", rule.outcomes.customs_duty_rate + "%");
+              console.log(" Required Documentation:", rule.outcomes.certification_required);
+              console.log("==================================================");
             } else {
-              console.error("❌ فشل المطابقة: الشروط غير مستوفاة");
+              console.error("❌ Conformance Failed: Non-compliant criteria detected");
               process.exit(1);
             }
           '
